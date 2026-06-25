@@ -1,4 +1,3 @@
-import Link from "next/link";
 import Reveal from "./Reveal";
 
 const checklist = [
@@ -47,12 +46,12 @@ export default function Offer() {
             </p>
             <p className="mt-2 text-ink/60">Pagamento único, acesso para sempre</p>
 
-            <Link
-              href="/cadastro"
+            <a
+              href={process.env.NEXT_PUBLIC_CHECKOUT_URL || "#"}
               className="mt-10 inline-block w-full md:w-auto rounded-full bg-ink text-bg font-bold uppercase tracking-widest text-base px-12 py-6 hover:bg-accent hover:text-ink transition-colors duration-500"
             >
               Quero criar minha cápsula agora
-            </Link>
+            </a>
 
             <p className="mt-6 text-[11px] font-bold uppercase tracking-widest text-ink/50">
               Garantia incondicional de 7 dias — devolução total do valor
