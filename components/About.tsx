@@ -1,15 +1,22 @@
 import Reveal from "./Reveal";
+import Carousel from "./Carousel";
+
+const PHOTOS = [
+  "/fotos/capsula-1.png",
+  "/fotos/capsula-2.png",
+  "/fotos/capsula-3.png",
+  "/fotos/capsula-4.png",
+  "/fotos/capsula-5.png",
+  "/fotos/capsula-6.png",
+  "/fotos/capsula-7.png",
+];
 
 export default function About() {
   return (
     <section className="py-24 px-6">
       <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center">
         <Reveal>
-          <div className="grayscale-hover rounded-[24px] overflow-hidden aspect-[4/5] bg-bg2 flex items-center justify-center">
-            <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-ink/40">
-              Foto da criadora
-            </span>
-          </div>
+          <Carousel images={PHOTOS} />
         </Reveal>
 
         <Reveal delay={150}>

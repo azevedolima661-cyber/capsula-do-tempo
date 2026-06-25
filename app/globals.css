@@ -31,3 +31,12 @@ body {
   filter: grayscale(0%);
   transform: scale(1.08);
 }
+
+.scrollbar-hide {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
