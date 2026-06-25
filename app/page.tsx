@@ -5,6 +5,7 @@ import About from "@/components/About";
 import ForWho from "@/components/ForWho";
 import Mechanism from "@/components/Mechanism";
 import Includes from "@/components/Includes";
+import Testimonials from "@/components/Testimonials";
 import Offer from "@/components/Offer";
 import Faq from "@/components/Faq";
 import Footer from "@/components/Footer";
@@ -20,6 +21,7 @@ export default function Home() {
         <ForWho />
         <Mechanism />
         <Includes />
+        <Testimonials />
         <Offer />
         <Faq />
       </main>
