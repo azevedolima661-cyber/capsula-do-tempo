@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Reveal from "./Reveal";
 
 const bonuses = [
@@ -13,21 +16,40 @@ const bonuses = [
   },
 ];
 
+function getTimeLeft() {
+  const now = new Date();
+  const midnight = new Date(now);
+  midnight.setHours(24, 0, 0, 0);
+  const diff = Math.max(0, midnight.getTime() - now.getTime());
+  const h = Math.floor(diff / 3600000);
+  const m = Math.floor((diff % 3600000) / 60000);
+  const s = Math.floor((diff % 60000) / 1000);
+  return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+}
+
 export default function Bonuses() {
+  const [timeLeft, setTimeLeft] = useState<string | null>(null);
+
+  useEffect(() => {
+    setTimeLeft(getTimeLeft());
+    const interval = setInterval(() => setTimeLeft(getTimeLeft()), 1000);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <section className="py-24 px-6">
       <div className="max-w-5xl mx-auto">
         <Reveal>
           <div className="text-center">
-            <span className="inline-block rounded-full bg-accent/20 text-accent text-[10px] font-black uppercase tracking-[0.3em] px-4 py-2">
-              Bônus por tempo limitado
+            <span className="inline-flex items-center gap-2 rounded-full bg-accent/20 text-accent text-[10px] font-black uppercase tracking-[0.3em] px-4 py-2">
+              Bônus somem hoje à meia-noite{timeLeft ? ` · ${timeLeft}` : ""}
             </span>
             <h2 className="mt-6 text-4xl md:text-6xl font-black tracking-tighter uppercase">
               Bônus exclusivos para quem garantir agora
             </h2>
             <p className="mt-4 text-lg text-ink/70 max-w-xl mx-auto">
               Além da sua Cápsula do Tempo, você ainda leva 2 bônus que tornam
-              a experiência ainda mais completa.
+              a experiência ainda mais completa — só hoje.
             </p>
           </div>
         </Reveal>

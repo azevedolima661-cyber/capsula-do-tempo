@@ -33,7 +33,7 @@ export default function Offer() {
                   <span className="text-ink/80">{item.label}</span>
                   {item.free && (
                     <span className="rounded-full bg-accent/20 text-accent text-[9px] font-black uppercase tracking-widest px-2 py-1">
-                      Grátis
+                      Grátis só hoje
                     </span>
                   )}
                 </li>
