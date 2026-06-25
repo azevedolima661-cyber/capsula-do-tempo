@@ -5,28 +5,32 @@ import Reveal from "./Reveal";
 
 const faqs = [
   {
-    q: "Como funciona a Cápsula do Tempo na prática?",
-    a: "Você sobe fotos, vídeos e textos na sua cápsula digital, escolhe a data de abertura e nosso sistema guarda tudo em segurança até esse dia chegar.",
+    q: "Preciso instalar algum aplicativo?",
+    a: "Não. Tudo funciona direto do navegador, tanto pra você quanto pra quem for contribuir com a cápsula.",
   },
   {
-    q: "Onde minhas memórias ficam guardadas?",
-    a: "Tudo fica armazenado em servidores seguros e criptografados, com backup automático, até a data de abertura escolhida.",
+    q: "Os convidados precisam se cadastrar para enviar fotos?",
+    a: "Não. Com o QR Code da sua cápsula, eles só escaneiam e enviam — sem criar conta, sem senha.",
   },
   {
-    q: "Posso escolher qualquer data de abertura?",
-    a: "Sim. Você define a data exata, seja em 1, 2, 5 ou 10 anos — o tempo que fizer sentido para a sua memória.",
+    q: "Funciona em iPhone e Android?",
+    a: "Sim. Funciona em qualquer celular ou computador com acesso à internet.",
+  },
+  {
+    q: "Por quanto tempo os arquivos ficam guardados até a abertura?",
+    a: "Pelo tempo que você escolher — 2, 5 ou 10 anos — sem limite de espaço ou risco de perder o conteúdo.",
+  },
+  {
+    q: "Posso baixar tudo de uma vez quando a cápsula abrir?",
+    a: "Sim. No dia da abertura você baixa todas as fotos, vídeos e cartas de uma vez só.",
+  },
+  {
+    q: "A Cápsula do Tempo serve só para casamentos?",
+    a: "Não. Funciona pra casamento, aniversário, gravidez, nascimento de bebê ou qualquer memória que você queira guardar.",
   },
   {
     q: "Posso criar uma cápsula para outra pessoa?",
     a: "Sim. Você pode presentear alguém criando uma cápsula que só ela vai poder abrir, na data que você escolher.",
-  },
-  {
-    q: "E se eu perder a senha ou trocar de e-mail?",
-    a: "Nosso suporte recupera o acesso pelo WhatsApp em poucos minutos, sem burocracia.",
-  },
-  {
-    q: "Tem algum limite de fotos ou vídeos?",
-    a: "Não. Você pode guardar quantas memórias quiser dentro da sua cápsula.",
   },
   {
     q: "Como funciona a garantia de 7 dias?",
