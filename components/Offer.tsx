@@ -1,5 +1,13 @@
 import Reveal from "./Reveal";
 
+const checklist = [
+  { label: "Cápsula digital ilimitada de fotos, vídeos e textos", free: false },
+  { label: "Data de abertura personalizada (2, 5 ou 10 anos)", free: false },
+  { label: "Armazenamento seguro e criptografado", free: false },
+  { label: "QR Code para convidados contribuírem", free: true },
+  { label: "Guia de Perguntas para o Futuro", free: true },
+];
+
 export default function Offer() {
   return (
     <section id="oferta" className="py-24 px-6">
@@ -15,7 +23,24 @@ export default function Offer() {
 
         <Reveal delay={150}>
           <div className="mt-12 rounded-[24px] bg-bg2 p-10 md:p-14">
-            <p className="text-ink/40 text-lg line-through">De R$97,00</p>
+            <p className="text-left text-[11px] font-bold uppercase tracking-widest text-ink/50">
+              O que você recebe
+            </p>
+            <ul className="mt-4 text-left space-y-3">
+              {checklist.map((item) => (
+                <li key={item.label} className="flex items-center gap-3">
+                  <span className="text-accent font-black">✓</span>
+                  <span className="text-ink/80">{item.label}</span>
+                  {item.free && (
+                    <span className="rounded-full bg-accent/20 text-accent text-[9px] font-black uppercase tracking-widest px-2 py-1">
+                      Grátis
+                    </span>
+                  )}
+                </li>
+              ))}
+            </ul>
+
+            <p className="mt-10 text-ink/40 text-lg line-through">De R$97,00</p>
             <p className="mt-2 text-6xl md:text-7xl font-black tracking-tighter">
               R$37<span className="text-2xl align-top">,00</span>
             </p>
