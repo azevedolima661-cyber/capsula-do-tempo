@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron/checar-aberturas",
+      "schedule": "0 6 * * *"
+    }
+  ]
+}
