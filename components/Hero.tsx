@@ -1,4 +1,5 @@
 import Reveal from "./Reveal";
+import VideoPlayer from "./VideoPlayer";
 
 export default function Hero() {
   return (
@@ -44,20 +45,8 @@ export default function Hero() {
         </div>
 
         <Reveal delay={200} className="relative">
-          <div
-            id="vsl"
-            className="relative rounded-[24px] overflow-hidden aspect-[4/5] bg-ink/90 flex items-center justify-center"
-          >
-            <button
-              type="button"
-              aria-label="Assistir vídeo de apresentação"
-              className="w-20 h-20 rounded-full bg-accent flex items-center justify-center hover:scale-110 transition-transform duration-500"
-            >
-              <span className="ml-1 border-l-[18px] border-l-ink border-y-[12px] border-y-transparent" />
-            </button>
-            <span className="absolute bottom-6 left-6 text-bg/70 text-[10px] font-bold uppercase tracking-[0.3em]">
-              Vídeo de apresentação
-            </span>
+          <div id="vsl">
+            <VideoPlayer src="/video-apresentacao.mp4" />
           </div>
 
           <div className="absolute -top-6 -right-6 w-40 h-40 rounded-full bg-accent text-ink flex flex-col items-center justify-center animate-bounce-slow shadow-lg">
