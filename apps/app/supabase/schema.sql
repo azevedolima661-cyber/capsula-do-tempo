@@ -1,5 +1,11 @@
 -- Cápsula do Tempo — schema do produto
 -- Rode este script no SQL Editor do seu projeto Supabase.
+--
+-- Se você já rodou uma versão anterior deste arquivo em produção, rodar tudo
+-- de novo vai falhar nas linhas "create policy" (elas não têm "if not exists").
+-- Nesse caso, rode antes: drop policy if exists "<nome da policy>" on <tabela>;
+-- para cada policy que mudou, ou aplique apenas as colunas novas (recipient_email,
+-- recipient_id, qr_settings) via "alter table" antes de recriar as policies.
 
 create extension if not exists "pgcrypto";
 
@@ -18,6 +24,9 @@ create table if not exists capsules (
   open_date date not null,
   status text not null default 'fechada' check (status in ('fechada', 'aberta')),
   notified_at timestamptz,
+  recipient_email text,
+  recipient_id uuid references auth.users (id) on delete set null,
+  qr_settings jsonb,
   created_at timestamptz not null default now()
 );
 
@@ -33,6 +42,7 @@ create table if not exists capsule_items (
 
 create index if not exists capsule_items_capsule_id_idx on capsule_items (capsule_id);
 create index if not exists capsules_owner_id_idx on capsules (owner_id);
+create index if not exists capsules_recipient_id_idx on capsules (recipient_id);
 create index if not exists capsules_open_date_idx on capsules (open_date);
 
 -- RLS
@@ -48,18 +58,21 @@ create policy "Usuário cria o próprio perfil" on profiles
   for insert with check (auth.uid() = id);
 
 create policy "Dono vê suas cápsulas" on capsules
-  for select using (auth.uid() = owner_id);
+  for select using (auth.uid() = owner_id or auth.uid() = recipient_id);
 create policy "Dono cria cápsulas" on capsules
   for insert with check (auth.uid() = owner_id);
 create policy "Dono atualiza suas cápsulas" on capsules
-  for update using (auth.uid() = owner_id);
+  for update using (auth.uid() = owner_id or auth.uid() = recipient_id);
 create policy "Dono apaga suas cápsulas" on capsules
-  for delete using (auth.uid() = owner_id);
+  for delete using (auth.uid() = owner_id or auth.uid() = recipient_id);
 
--- Itens: o dono vê tudo da própria cápsula
+-- Itens: dono e destinatário (cápsula presenteada) veem tudo da própria cápsula
 create policy "Dono vê itens da própria cápsula" on capsule_items
   for select using (
-    exists (select 1 from capsules c where c.id = capsule_id and c.owner_id = auth.uid())
+    exists (
+      select 1 from capsules c
+      where c.id = capsule_id and (c.owner_id = auth.uid() or c.recipient_id = auth.uid())
+    )
   );
 
 -- Convidados (sem login) podem inserir itens em qualquer cápsula ainda fechada —
@@ -72,7 +85,10 @@ create policy "Qualquer um pode contribuir com cápsula fechada" on capsule_item
 
 create policy "Dono apaga itens da própria cápsula" on capsule_items
   for delete using (
-    exists (select 1 from capsules c where c.id = capsule_id and c.owner_id = auth.uid())
+    exists (
+      select 1 from capsules c
+      where c.id = capsule_id and (c.owner_id = auth.uid() or c.recipient_id = auth.uid())
+    )
   );
 
 -- Storage: bucket privado para as mídias das cápsulas
@@ -87,7 +103,7 @@ create policy "Dono lê arquivos da própria cápsula"
     and exists (
       select 1 from capsules c
       where c.id::text = (storage.foldername(name))[1]
-      and c.owner_id = auth.uid()
+      and (c.owner_id = auth.uid() or c.recipient_id = auth.uid())
     )
   );
 

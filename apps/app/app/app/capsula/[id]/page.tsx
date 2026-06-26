@@ -57,6 +57,12 @@ export default async function CapsulaPage({ params }: { params: Promise<{ id: st
             <Link href={contributeUrl} className="text-xs text-accent font-bold break-all">
               {contributeUrl}
             </Link>
+            <Link
+              href={`/app/capsula/${id}/qrcode`}
+              className="mt-3 block text-[11px] font-bold uppercase tracking-widest text-ink/60 hover:text-accent"
+            >
+              Personalizar QR Code para o evento →
+            </Link>
           </div>
         )}
       </div>

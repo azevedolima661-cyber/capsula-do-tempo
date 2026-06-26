@@ -2,6 +2,7 @@
 
 import { useEffect, useState, type FormEvent } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { PERGUNTAS_PARA_O_FUTURO } from "@/lib/perguntas";
 
 type Item = {
   id: string;
@@ -26,6 +27,7 @@ export default function CapsuleManager({
   const [carta, setCarta] = useState("");
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showPerguntas, setShowPerguntas] = useState(false);
 
   useEffect(() => {
     const supabase = createClient();
@@ -120,9 +122,36 @@ export default function CapsuleManager({
           </div>
 
           <form onSubmit={handleCarta} className="space-y-2">
-            <label className="text-[11px] font-bold uppercase tracking-widest text-ink/50">
-              Escrever uma carta
-            </label>
+            <div className="flex items-center justify-between gap-4">
+              <label className="text-[11px] font-bold uppercase tracking-widest text-ink/50">
+                Escrever uma carta
+              </label>
+              <button
+                type="button"
+                onClick={() => setShowPerguntas((v) => !v)}
+                className="text-[11px] font-bold uppercase tracking-widest text-accent"
+              >
+                {showPerguntas ? "Esconder guia" : "Guia de perguntas"}
+              </button>
+            </div>
+
+            {showPerguntas && (
+              <div className="max-h-56 overflow-y-auto rounded-xl bg-bg2 p-3 space-y-1">
+                {PERGUNTAS_PARA_O_FUTURO.map((pergunta) => (
+                  <button
+                    key={pergunta}
+                    type="button"
+                    onClick={() =>
+                      setCarta((prev) => (prev ? `${prev}\n\n${pergunta}\n` : `${pergunta}\n`))
+                    }
+                    className="block w-full text-left text-sm rounded-lg px-3 py-2 hover:bg-accent/20 transition-colors duration-300"
+                  >
+                    {pergunta}
+                  </button>
+                ))}
+              </div>
+            )}
+
             <textarea
               value={carta}
               onChange={(e) => setCarta(e.target.value)}

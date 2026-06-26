@@ -6,7 +6,7 @@ import { useState, type FormEvent } from "react";
 import { createClient } from "@/lib/supabase/client";
 
 const prazos = [
-  { label: "2 anos", anos: 2 },
+  { label: "1 ano", anos: 1 },
   { label: "5 anos", anos: 5 },
   { label: "10 anos", anos: 10 },
 ];
@@ -14,7 +14,9 @@ const prazos = [
 export default function NovaCapsulaPage() {
   const router = useRouter();
   const [title, setTitle] = useState("");
-  const [anos, setAnos] = useState(2);
+  const [anos, setAnos] = useState(1);
+  const [presentear, setPresentear] = useState(false);
+  const [recipientEmail, setRecipientEmail] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -40,6 +42,7 @@ export default function NovaCapsulaPage() {
         owner_id: userData.user.id,
         title,
         open_date: openDate.toISOString().slice(0, 10),
+        recipient_email: presentear && recipientEmail ? recipientEmail : null,
       })
       .select("id")
       .single();
@@ -48,6 +51,14 @@ export default function NovaCapsulaPage() {
       setError("Não foi possível criar a cápsula. Tente novamente.");
       setLoading(false);
       return;
+    }
+
+    if (presentear && recipientEmail) {
+      await fetch("/api/capsulas/presentear", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ capsuleId: data.id, recipientEmail }),
+      }).catch(() => {});
     }
 
     router.push(`/app/capsula/${data.id}`);
@@ -100,6 +111,35 @@ export default function NovaCapsulaPage() {
                 </button>
               ))}
             </div>
+          </div>
+
+          <div className="rounded-xl bg-bg2 px-4 py-3">
+            <label className="flex items-center gap-2 text-sm font-bold">
+              <input
+                type="checkbox"
+                checked={presentear}
+                onChange={(e) => setPresentear(e.target.checked)}
+              />
+              Presentear esta cápsula para outra pessoa
+            </label>
+            {presentear && (
+              <div className="mt-3">
+                <label className="text-[11px] font-bold uppercase tracking-widest text-ink/50">
+                  E-mail de quem vai receber
+                </label>
+                <input
+                  type="email"
+                  required={presentear}
+                  placeholder="nome@exemplo.com"
+                  value={recipientEmail}
+                  onChange={(e) => setRecipientEmail(e.target.value)}
+                  className="mt-2 w-full rounded-xl bg-bg px-4 py-3 outline-none focus:ring-2 focus:ring-accent"
+                />
+                <p className="mt-2 text-xs text-ink/50">
+                  Ela vai receber um e-mail com acesso completo a esta cápsula, para guardar memórias junto com você.
+                </p>
+              </div>
+            )}
           </div>
 
           {error && <p className="text-sm text-red-600">{error}</p>}
