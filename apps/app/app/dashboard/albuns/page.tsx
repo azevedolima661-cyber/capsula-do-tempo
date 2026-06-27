@@ -1,16 +1,17 @@
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { getMembroEmailServer } from "@/lib/membro-server";
 import { AlbumCardManaged } from "@/components/AlbumCardManaged";
 import { CriarAlbumButton } from "@/components/CriarAlbumButton";
 
 export default async function AlbunsPage() {
-  const supabase = await createClient();
-  const { data: userData } = await supabase.auth.getUser();
+  const email = await getMembroEmailServer();
+  const supabase = createAdminClient();
   const { data: capsulas } = await supabase
     .from("capsulas")
     .select(
       "id, nome, slug, modalidade, prazo_anos, data_evento, status, allow_guest_view, data_abertura, nome_responsavel, event_date_change_count"
     )
-    .eq("user_id", userData.user?.id)
+    .eq("owner_email", email)
     .order("criado_em", { ascending: false });
 
   return (

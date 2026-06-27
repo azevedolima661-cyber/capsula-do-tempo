@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Camera, Clock, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { getMembroEmail } from "@/lib/membro";
 import { gerarSlug } from "@/lib/slug";
 
 type Modalidade = "momento_agora" | "capsula_tempo";
@@ -27,14 +28,14 @@ export function NovaCapsulaModal({ onClose }: { onClose: () => void }) {
     setLoading(true);
     setError(null);
 
-    const supabase = createClient();
-    const { data: userData } = await supabase.auth.getUser();
-    if (!userData.user) {
-      setError("Sessão expirada. Faça login novamente.");
+    const email = getMembroEmail();
+    if (!email) {
+      setError("Sessão expirada. Entre novamente com seu e-mail.");
       setLoading(false);
       return;
     }
 
+    const supabase = createClient();
     const dataEventoIso = dataEvento ? new Date(dataEvento).toISOString() : null;
     const dataAbertura =
       modalidade === "capsula_tempo" && prazoAnos && dataEventoIso
@@ -46,7 +47,7 @@ export function NovaCapsulaModal({ onClose }: { onClose: () => void }) {
     const { data, error: insertError } = await supabase
       .from("capsulas")
       .insert({
-        user_id: userData.user.id,
+        owner_email: email,
         nome,
         slug: gerarSlug(nome),
         modalidade,

@@ -1,16 +1,15 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
+import { getMembroEmailServer } from "@/lib/membro-server";
 import { ProfileMenu } from "@/components/ProfileMenu";
 
 export default async function DashboardLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const supabase = await createClient();
-  const { data } = await supabase.auth.getUser();
+  const email = await getMembroEmailServer();
 
-  if (!data.user) {
-    redirect("/login");
+  if (!email) {
+    redirect("/");
   }
 
   return (
@@ -20,7 +19,7 @@ export default async function DashboardLayout({
           <Link href="/dashboard" className="text-xl font-extrabold text-primary">
             Cápsula <span className="text-secondary">do Tempo</span>
           </Link>
-          <ProfileMenu email={data.user.email ?? ""} />
+          <ProfileMenu email={email} />
         </div>
       </header>
       <main className="flex-1 mx-auto w-full max-w-5xl px-6 py-10">{children}</main>

@@ -1,6 +1,5 @@
-import Link from "next/link";
 import { Camera, Clock, QrCode } from "lucide-react";
-import { CheckoutButton } from "@/components/CheckoutButton";
+import { EntrarForm } from "@/components/EntrarForm";
 
 export default function HomePage() {
   return (
@@ -11,16 +10,13 @@ export default function HomePage() {
         </h1>
         <p className="mt-4 max-w-xl text-lg text-ink/60">
           Reúna fotos e vídeos de quem você ama, agora ou para abrir só no futuro.
-          Sem app pra baixar, sem login pra convidados — só um link ou QR Code.
+          Digite seu e-mail para entrar.
         </p>
 
-        <CheckoutButton />
+        <EntrarForm />
 
         <p className="mt-3 text-sm text-ink/50">
-          Pagamento único de R$37, acesso vitalício. Já comprou?{" "}
-          <Link href="/login" className="font-bold text-primary">
-            Entrar
-          </Link>
+          Use o e-mail da sua compra para acessar seus álbuns.
         </p>
       </section>
 
