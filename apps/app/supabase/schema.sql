@@ -67,10 +67,15 @@ create policy "Usuário atualiza o próprio perfil" on profiles
 create policy "Usuário cria o próprio perfil" on profiles
   for insert with check (auth.uid() = id);
 
--- Cápsulas: só o dono administra pelo painel. A página pública (/c/[slug])
--- usa o client admin (service role) no servidor, então não depende de RLS.
-create policy "Dono vê suas cápsulas" on capsulas
-  for select using (auth.uid() = user_id);
+-- Cápsulas: o painel sempre usa o client admin (service role) no servidor,
+-- então não depende de RLS para o dono ler/escrever. Esta policy de select
+-- público existe só para que os EXISTS(...) das policies de memorias e
+-- storage.objects (avaliadas com o role anon do convidado) consigam ver a
+-- linha da cápsula — os dados aqui não são sensíveis (o link já é o que dá
+-- acesso ao álbum).
+create policy "Qualquer um pode ver cápsulas pelo link" on capsulas
+  for select using (true);
+
 create policy "Dono cria cápsulas" on capsulas
   for insert with check (auth.uid() = user_id);
 create policy "Dono atualiza suas cápsulas" on capsulas
