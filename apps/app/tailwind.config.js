@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+  darkMode: 'class',
   content: [
     './app/**/*.{js,ts,jsx,tsx,mdx}',
     './components/**/*.{js,ts,jsx,tsx,mdx}',
@@ -7,10 +8,11 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        bg: '#fdf8f3',
-        bg2: '#f5f0eb',
-        accent: '#e4a4bd',
-        ink: '#262626',
+        bg: '#F9FAFB',
+        ink: '#1F2937',
+        primary: '#8B5CF6',
+        secondary: '#EC4899',
+        whatsapp: '#25D366',
       },
       fontFamily: {
         sans: ['var(--font-league-spartan)', 'sans-serif'],

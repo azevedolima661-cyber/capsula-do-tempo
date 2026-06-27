@@ -5,49 +5,34 @@ import { createAdminClient } from "@/lib/supabase/admin";
 export async function GET(request: NextRequest) {
   const authHeader = request.headers.get("authorization");
   if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-    return NextResponse.json({ error: "Não autorizado" }, { status: 401 });
+    return NextResponse.json({ error: "Não autorizado." }, { status: 401 });
   }
 
-  const supabase = createAdminClient();
-  const today = new Date().toISOString().slice(0, 10);
+  const admin = createAdminClient();
+  const resend = new Resend(process.env.RESEND_API_KEY);
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
 
-  const { data: capsules, error } = await supabase
-    .from("capsules")
-    .select("id, title, owner_id")
+  const { data: capsulas } = await admin
+    .from("capsulas")
+    .select("id, nome, slug, user_id, profiles(email)")
+    .eq("modalidade", "capsula_tempo")
     .eq("status", "fechada")
-    .lte("open_date", today);
+    .lte("data_abertura", new Date().toISOString());
 
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  for (const capsula of capsulas ?? []) {
+    await admin.from("capsulas").update({ status: "aberta" }).eq("id", capsula.id);
+
+    const email = (capsula as unknown as { profiles: { email: string } | null }).profiles?.email;
+    if (!email) continue;
+
+    await resend.emails.send({
+      from: "Cápsula do Tempo <onboarding@resend.dev>",
+      to: email,
+      subject: "Sua cápsula foi aberta! 🎉",
+      html: `<p>Sua cápsula <strong>${capsula.nome}</strong> acabou de ser aberta.</p>
+             <p><a href="${siteUrl}/dashboard/album/${capsula.slug}/completo">Ver memórias</a></p>`,
+    });
   }
 
-  if (!capsules || capsules.length === 0) {
-    return NextResponse.json({ aberta: 0 });
-  }
-
-  const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
-
-  for (const capsule of capsules) {
-    await supabase
-      .from("capsules")
-      .update({ status: "aberta", notified_at: new Date().toISOString() })
-      .eq("id", capsule.id);
-
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("email, name")
-      .eq("id", capsule.owner_id)
-      .single();
-
-    if (resend && profile?.email) {
-      await resend.emails.send({
-        from: "Cápsula do Tempo <contato@capsuladotempo.com>",
-        to: profile.email,
-        subject: `Sua cápsula "${capsule.title}" foi aberta!`,
-        html: `<p>Olá${profile.name ? `, ${profile.name}` : ""}!</p><p>Chegou o dia: sua cápsula <strong>${capsule.title}</strong> foi aberta. Entre na sua conta para reviver tudo o que foi guardado.</p>`,
-      });
-    }
-  }
-
-  return NextResponse.json({ aberta: capsules.length });
+  return NextResponse.json({ ok: true, abertas: capsulas?.length ?? 0 });
 }

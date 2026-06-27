@@ -9,8 +9,8 @@ const leagueSpartan = League_Spartan({
 });
 
 export const metadata: Metadata = {
-  title: "Cápsula do Tempo — Sua cápsula",
-  description: "Acesse sua cápsula do tempo: envie fotos, vídeos e cartas para o futuro.",
+  title: "Cápsula do Tempo",
+  description: "Guarde e compartilhe memórias agora ou para o futuro.",
 };
 
 export default function RootLayout({
