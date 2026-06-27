@@ -1,7 +1,8 @@
 import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 
 // Cliente com service role — só usar em rotas server-side de confiança
-// (ex: cron job), nunca expor ao navegador.
+// (ex: cron job, webhook de pagamento, página pública do convidado),
+// nunca expor ao navegador.
 export function createAdminClient() {
   return createSupabaseClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,

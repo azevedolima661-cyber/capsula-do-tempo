@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useState, type FormEvent } from "react";
 import { createClient } from "@/lib/supabase/client";
 
-function EntrarForm() {
+function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
@@ -19,10 +19,7 @@ function EntrarForm() {
     setError(null);
 
     const supabase = createClient();
-    const { error: signInError } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
 
     if (signInError) {
       setError("E-mail ou senha incorretos.");
@@ -30,45 +27,39 @@ function EntrarForm() {
       return;
     }
 
-    router.push(searchParams.get("redirect") || "/app");
+    router.push(searchParams.get("redirect") || "/dashboard");
     router.refresh();
   };
 
   return (
     <div className="w-full max-w-md">
-      <Link href="/" className="text-sm font-bold uppercase tracking-widest text-ink/50">
+      <Link href="/" className="text-sm font-bold text-ink/50">
         ← Voltar
       </Link>
 
-      <h1 className="mt-6 text-3xl md:text-4xl font-black tracking-tighter uppercase">
-        Entrar
-      </h1>
-      <p className="mt-2 text-ink/60">Acesse sua cápsula do tempo.</p>
+      <h1 className="mt-6 text-3xl font-extrabold text-ink">Entrar</h1>
+      <p className="mt-2 text-ink/60">Acesse o painel da sua Cápsula do Tempo.</p>
 
       <form onSubmit={handleSubmit} className="mt-8 space-y-4">
         <div>
-          <label className="text-[11px] font-bold uppercase tracking-widest text-ink/50">
-            E-mail
-          </label>
+          <label className="text-sm font-medium text-ink/70">E-mail</label>
           <input
             type="email"
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="mt-2 w-full rounded-xl bg-bg2 px-4 py-3 outline-none focus:ring-2 focus:ring-accent"
+            className="mt-2 w-full rounded-2xl border border-gray-200 bg-white px-4 py-3 outline-none focus:ring-2 focus:ring-primary"
           />
         </div>
 
         <div>
-          <label className="text-[11px] font-bold uppercase tracking-widest text-ink/50">
-            Senha
-          </label>
+          <label className="text-sm font-medium text-ink/70">Senha</label>
           <input
             type="password"
             required
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="mt-2 w-full rounded-xl bg-bg2 px-4 py-3 outline-none focus:ring-2 focus:ring-accent"
+            className="mt-2 w-full rounded-2xl border border-gray-200 bg-white px-4 py-3 outline-none focus:ring-2 focus:ring-primary"
           />
         </div>
 
@@ -77,7 +68,7 @@ function EntrarForm() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full rounded-full bg-ink text-bg font-bold uppercase tracking-widest text-sm px-8 py-4 hover:bg-accent hover:text-ink transition-colors duration-500 disabled:opacity-50"
+          className="w-full rounded-2xl bg-primary text-white font-bold py-3 shadow-sm hover:opacity-90 transition-opacity duration-300 disabled:opacity-50"
         >
           {loading ? "Entrando..." : "Entrar"}
         </button>
@@ -85,19 +76,19 @@ function EntrarForm() {
 
       <p className="mt-6 text-sm text-ink/60">
         Ainda não tem conta?{" "}
-        <Link href="/cadastro" className="font-bold text-accent">
-          Criar cápsula
+        <Link href="/cadastro" className="font-bold text-primary">
+          Criar conta
         </Link>
       </p>
     </div>
   );
 }
 
-export default function EntrarPage() {
+export default function LoginPage() {
   return (
     <main className="flex-1 flex items-center justify-center px-6 py-24">
       <Suspense>
-        <EntrarForm />
+        <LoginForm />
       </Suspense>
     </main>
   );
