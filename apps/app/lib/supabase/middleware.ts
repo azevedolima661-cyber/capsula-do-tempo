@@ -1,36 +1,16 @@
-import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { MEMBRO_COOKIE } from "@/lib/membro";
 
-export async function updateSession(request: NextRequest) {
-  let response = NextResponse.next({ request });
+// Sem login seguro: a "porta de entrada" é só o cookie com o e-mail. Se a pessoa
+// tenta abrir o painel sem ter entrado, manda de volta pra tela inicial.
+export function updateSession(request: NextRequest) {
+  const temEmail = request.cookies.get(MEMBRO_COOKIE)?.value;
 
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return request.cookies.getAll();
-        },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
-          response = NextResponse.next({ request });
-          cookiesToSet.forEach(({ name, value, options }) =>
-            response.cookies.set(name, value, options)
-          );
-        },
-      },
-    }
-  );
-
-  const { data } = await supabase.auth.getUser();
-
-  if (!data.user && request.nextUrl.pathname.startsWith("/dashboard")) {
+  if (!temEmail && request.nextUrl.pathname.startsWith("/dashboard")) {
     const url = request.nextUrl.clone();
-    url.pathname = "/login";
-    url.searchParams.set("redirect", request.nextUrl.pathname);
+    url.pathname = "/";
     return NextResponse.redirect(url);
   }
 
-  return response;
+  return NextResponse.next({ request });
 }

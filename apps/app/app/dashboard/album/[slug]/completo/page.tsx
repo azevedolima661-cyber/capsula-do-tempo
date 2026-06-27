@@ -1,21 +1,22 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { getMembroEmailServer } from "@/lib/membro-server";
 import { CountdownLock } from "@/components/CountdownLock";
 import { GaleriaCompleta } from "@/components/GaleriaCompleta";
 
 export default async function GaleriaPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const supabase = await createClient();
-  const { data: userData } = await supabase.auth.getUser();
+  const email = await getMembroEmailServer();
+  const supabase = createAdminClient();
 
   const { data: capsula } = await supabase
     .from("capsulas")
-    .select("id, nome, slug, modalidade, status, data_abertura, user_id")
+    .select("id, nome, slug, modalidade, status, data_abertura, owner_email")
     .eq("slug", slug)
     .maybeSingle();
 
-  if (!capsula || capsula.user_id !== userData.user?.id) {
+  if (!capsula || capsula.owner_email !== email) {
     notFound();
   }
 

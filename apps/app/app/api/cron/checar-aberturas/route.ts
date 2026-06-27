@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
 
   const { data: capsulas } = await admin
     .from("capsulas")
-    .select("id, nome, slug, user_id, profiles(email)")
+    .select("id, nome, slug, owner_email")
     .eq("modalidade", "capsula_tempo")
     .eq("status", "fechada")
     .lte("data_abertura", new Date().toISOString());
@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
   for (const capsula of capsulas ?? []) {
     await admin.from("capsulas").update({ status: "aberta" }).eq("id", capsula.id);
 
-    const email = (capsula as unknown as { profiles: { email: string } | null }).profiles?.email;
+    const email = capsula.owner_email;
     if (!email) continue;
 
     await resend.emails.send({

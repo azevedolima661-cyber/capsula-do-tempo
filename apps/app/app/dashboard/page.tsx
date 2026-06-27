@@ -1,16 +1,17 @@
 import Link from "next/link";
 import { HelpCircle } from "lucide-react";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { getMembroEmailServer } from "@/lib/membro-server";
 import { AlbumCard } from "@/components/AlbumCard";
 import { CriarAlbumButton } from "@/components/CriarAlbumButton";
 
 export default async function DashboardPage() {
-  const supabase = await createClient();
-  const { data: userData } = await supabase.auth.getUser();
+  const email = await getMembroEmailServer();
+  const supabase = createAdminClient();
   const { data: capsulas } = await supabase
     .from("capsulas")
     .select("id, nome, slug, modalidade, status, allow_guest_view, data_abertura")
-    .eq("user_id", userData.user?.id)
+    .eq("owner_email", email)
     .order("criado_em", { ascending: false });
 
   return (
